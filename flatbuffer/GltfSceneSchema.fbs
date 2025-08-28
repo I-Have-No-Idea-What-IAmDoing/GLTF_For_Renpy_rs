@@ -1,0 +1,205 @@
+struct Vector3 {
+  x:float;
+  y:float;
+  z:float;
+}
+
+struct Vector4 {
+  x:float;
+  y:float;
+  z:float;
+  w:float;
+}
+
+struct Transform {
+    translation: Vector3;
+    rotation: Vector4;
+    scale: Vector3;
+}
+
+struct RGBAColor {
+  rgba:[float32:4];
+}
+
+struct Matrix4 {
+  mat:[float32:16];
+}
+
+table Property {
+	name: string (key);
+    value: string;
+}
+
+enum GlobalIdType: int8 {
+    SceneRoot,
+    NodeID,
+    ObjectIndex,
+}
+
+struct GlobalNodeIdentifier {
+    type: GlobalIdType;
+    id: uint64;
+}
+
+table ImageName{}
+table RGBAImageData{data: [ubyte];}
+table RGBAColorData{data: RGBAColor;}
+
+union ImageData{  
+	ImageName: ImageName,
+    RGBA: RGBAImageData,
+    Color: RGBAColorData,
+}
+
+table Image {
+	name: string;
+    data: ImageData;
+    width: uint32;
+    height: uint32;
+}
+
+enum InterpolationTypes: int8 {
+    None,
+    Step,
+    Linear,
+    Cubic,
+}
+
+struct InterpolationTargets {
+    translation: InterpolationTypes;
+    rotation: InterpolationTypes;
+    scale: InterpolationTypes;
+    weights: InterpolationTypes;
+}
+
+enum AnimationTargetTypes: short {
+    Object,
+    Bone,
+}
+
+table AnimationValues {
+    translation: Vector3;
+    rotation: Vector4;
+    scale: Vector3;
+    weights: [float32];
+}
+
+table AnimationKeyFrames {
+    time: float32;
+    value: AnimationValues;
+}
+
+table AnimationSet{
+	name: string (key);
+    animations: Animation;
+}
+
+table Animation {
+    target: uint64;
+    target_type: AnimationTargetTypes;
+    interpolation: InterpolationTargets;
+
+    frames: [AnimationKeyFrames];
+    duration: float32;
+}
+
+table MorphTargets {
+    name: string (required);
+    translation: [Vector3];
+}
+
+table Skeleton{
+    /// The internal index from the json file
+    id: uint64;
+
+    /// User-provided name
+    name: string;
+
+    /// The root of the skeleton tree
+    root_index: GlobalNodeIdentifier;
+
+    /// Matrixes used to bring coordinates being skinned into the same space as the joint
+    inverse_bind_matrixes: [Matrix4];
+
+    /// List of bones assoicated with the skeleton
+    bones: [GlobalNodeIdentifier];
+
+    /// Extra user data
+    properties: [Property];
+}
+
+struct LayoutType{
+    has_uvs: bool;
+    morph_target_count: uint8;
+    has_skin: bool;
+}
+
+table Mesh {
+	name: string (required);
+    
+    id: uint64;
+    
+    transform: Transform (required);
+
+	points: [float32] (required);
+
+    morph_targets: [MorphTargets];
+
+    default_morph_weights: [float32];
+
+	triangles: [uint32] (required);
+        
+    animations: [AnimationSet] (required);
+    
+    uvs: [float32];
+
+    skeleton: Skeleton;
+    
+    texture: Image;
+
+    layout_type: LayoutType (required);
+
+    attributes: [float32] (required);
+
+    properties: [Property] (required);
+}
+
+table Empties {
+    id: uint64;
+
+    name: string (required);
+    
+    transform: Transform (required);
+    
+    animations: [AnimationSet] (required);  
+    
+    properties: [Property] (required);
+}
+
+union Object{  
+	Mesh: Mesh,
+    Empties: Empties,
+}
+
+table Node{  
+	children: [uint32] (required);
+	object: Object (required);
+}
+
+table GltfScene {
+	name: string (required);
+    objects: [Node] (required);
+    root_nodes: [uint32] (required);
+
+    /// These are indexes into the object array
+    model_index: [uint32] (required);
+    empty_index: [uint32] (required);
+
+    properties: [Property] (required);
+}
+
+table Scenes {
+	scenes: [GltfScene] (required);
+}
+
+root_type Scenes;

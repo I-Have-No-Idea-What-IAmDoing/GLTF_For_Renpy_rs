@@ -1,0 +1,27 @@
+[package]
+name = "gltf_loader"
+version = "1.1.2"
+authors = ["Florian Amsallem <florian.amsallem@epita.fr>"]
+description = "glTF 2.0 loader forked from easy_gltf"
+documentation = "https://docs.rs/easy-gltf"
+repository = "https://github.com/flomonster/easy-gltf"
+homepage = "https://github.com/flomonster/easy-gltf"
+edition = "2024"
+license = "MIT"
+keywords = ["glTF", "asset", "model", "scene"]
+exclude = [".github/"]
+
+[features]
+default = []
+
+[dependencies]
+cgmath = "0.18.0"
+gltf = { version = "1.4.1", features = ["extras", "KHR_lights_punctual", "KHR_texture_transform", "KHR_materials_unlit"] }
+image = "0.25.0"
+base64 = "0.22.0"
+rayon = "1.10.0"
+rustc-hash = "2.0.0"
+ego-tree = "0.10.0"
+anyhow = "1.0"
+itertools = "0.14.0"
+ordered-float = "5.0.0"

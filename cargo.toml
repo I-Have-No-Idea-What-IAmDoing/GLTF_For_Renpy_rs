@@ -1,0 +1,16 @@
+[workspace]
+
+resolver = '2'
+
+members = [
+    "gltf_for_renpy",
+    "gltf_loader",  
+    "flatbuffer",  
+]
+
+[profile.release-with-debug]
+inherits = "release"
+debug = "full"
+
+[profile.release]
+lto = true

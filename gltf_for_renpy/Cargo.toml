@@ -1,0 +1,28 @@
+[package]
+name = "gltf_for_renpy"
+version = "0.3.0"
+edition = "2024"
+
+[lib]
+name = "gltf_for_renpy"
+crate-type = ["cdylib", "lib"]
+
+[features]
+default =["sqlite"]
+sqlite = ["dep:rusqlite"]
+rocksdb = ["dep:rocksdb"]
+
+[dependencies]
+gltf = "1.4.1"
+gltf_loader = {path= "../gltf_loader"}
+gltf_for_renpy_flatbuffer = {path= "../flatbuffer"}
+flatbuffers = "25.2.10"
+rusqlite = { version = "0.36.0", features = ["bundled", "blob"], optional = true}
+rocksdb = { version = "0.23.0", optional = true}
+nohash-hasher = "0.2.0"
+anyhow = "1.0"
+image = "0.25.0"
+cgmath = "0.18.0"
+ego-tree = "0.10.0"
+rayon = "1.10.0"
+itertools = "0.14.0"

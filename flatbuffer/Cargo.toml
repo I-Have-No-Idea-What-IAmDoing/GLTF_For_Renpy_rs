@@ -1,0 +1,11 @@
+[package]
+name = "gltf_for_renpy_flatbuffer"
+version = "1.0.0"
+edition = "2021"
+
+[lib]
+name = "gltf_for_renpy_flatbuffer"
+crate-type = ["lib"]
+
+[dependencies]
+flatbuffers = "25.2.10"
